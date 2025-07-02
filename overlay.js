@@ -186,7 +186,12 @@ Alpine.data("overlay", () => ({
   // Save data to JSON for later use
   saveToJsonFile() {
     // Build JSON blob and automatically rename to current timestamp
-    let jsonData = JSON.stringify(this.items, null, 4);
+    let items = {};
+    items.items = this.items;
+    items.titleTruncateLength = this.titleTruncateLength;
+    items.diffTruncateLength = this.diffTruncateLength;
+
+    let jsonData = JSON.stringify(items, null, 4);
     const blob = new Blob([jsonData], { type: "application/json" });
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const filename = `items-${timestamp}.json`;
@@ -220,8 +225,9 @@ Alpine.data("overlay", () => ({
     reader.onload = (e) => {
       try {
         // Parse the JSON
-        this.items = JSON.parse(e.target.result);
-        console.log("Loaded data:", this.rawData);
+        const items = JSON.parse(e.target.result);
+        console.log("Loaded data:", items);
+        ({ titleTruncateLength: this.titleTruncateLength, diffTruncateLength: this.diffTruncateLength, items: this.items } = items);
       } catch (error) {
         alert("Invalid JSON file!");
         console.error(error);
