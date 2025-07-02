@@ -50,6 +50,11 @@
   /* border: 1pt solid white; */
 }
 
+.settings {
+  font-family: 'Torus';
+  color: white;
+}
+
 .box-1 {
   /* border: 1pt solid rgb(0, 248, 54); */
   display: flex;

@@ -112,5 +112,138 @@
         </div>
       </div>
     </div>
+
+    <div class="settings">
+      <div class="header">
+        <h1>Settings</h1>
+      </div>
+      <div class="modes">
+        <div>
+          <h3>Modes: (wip)</h3>
+        </div>
+        <label>
+          <input type="radio" x-model="currentGamemode" :value="0" x-effect="setGamemode(currentGamemode)" />
+          Standard
+        </label>
+        <label>
+          <input type="radio" x-model="currentGamemode" :value="1" x-effect="setGamemode(currentGamemode)" />
+          Taiko
+        </label>
+        <label>
+          <input type="radio" x-model="currentGamemode" :value="2" x-effect="setGamemode(currentGamemode)" />
+          Catch
+        </label>
+        <label>
+          <input type="radio" x-model="currentGamemode" :value="3" x-effect="setGamemode(currentGamemode)" />
+          Mania 4K
+        </label>
+        <label>
+          <input type="radio" x-model="currentGamemode" :value="4" x-effect="setGamemode(currentGamemode)" />
+          Mania 7K
+        </label>
+      </div>
+      <div class="text-setting">
+        <div class="header">
+          <h3>Artist and song title</h3>
+        </div>
+        <div class="truncate-title">
+          <label for="">Truncate title for up to: </label>
+          <input type="number" x-model="titleTruncateLength" />
+          characters
+        </div>
+        <div class="truncate-diff">
+          <label for="">Truncate difficulty for up to: </label>
+          <input type="number" x-model="diffTruncateLength" />
+          characters
+        </div>
+      </div>
+      <!-- <div class="bgcolor">
+        <div>
+          <h3>Background Color:</h3>
+        </div>
+      </div> -->
+      <div class="header">
+        <div>
+          <h2>Hash Settings</h2>
+          <div class="file-buttons">
+            <div class="save">
+              <button @click="saveToJsonFile()">Save as JSON</button>
+            </div>
+            <div class="load">
+              <label for="">Load JSON file: </label>
+              <input type="file" @change="loadJsonFile($event)" accept="json" />
+            </div>
+          </div>
+          <div class="hash-options">
+            <!-- For first column data -->
+            <div class="first-column">
+              <div class="header">
+                <h3>Row 1</h3>
+              </div>
+              <div class="buttons">
+                <button @click="addMapAndHash(0)">Add column</button>
+                <button @click="removeMapAndHash(0)">Remove column</button>
+              </div>
+
+              <div class="entries">
+                <table>
+                  <tr>
+                    <td>Map Type</td>
+                    <td>Hash</td>
+                    <td>
+                      <button @click="showMapAndHash(0)">Show entries to console</button>
+                    </td>
+                  </tr>
+                  <template x-for="entry in items.row1">
+                    <tr>
+                      <td>
+                        <input type="text" style="width: 100px" x-model="entry.col" />
+                      </td>
+                      <td>
+                        <input type="text" style="width: 300px" x-model="entry.hash" />
+                      </td>
+                    </tr>
+                  </template>
+                </table>
+              </div>
+            </div>
+            <!-- End for first column data -->
+            <!-- For second column data -->
+            <div class="second-column">
+              <div class="header">
+                <h3>Row 2</h3>
+              </div>
+              <div class="buttons">
+                <button @click="addMapAndHash(1)">Add column</button>
+                <button @click="removeMapAndHash(1)">Remove column</button>
+              </div>
+
+              <div class="entries">
+                <table>
+                  <tr>
+                    <td>Map Type</td>
+                    <td>Hash</td>
+                    <td>
+                      <button @click="showMapAndHash(1)">Show entries to console</button>
+                    </td>
+                  </tr>
+                  <template x-for="entry in items.row2">
+                    <tr>
+                      <td>
+                        <input type="text" style="width: 100px" x-model="entry.col" />
+                      </td>
+                      <td>
+                        <input type="text" style="width: 300px" x-model="entry.hash" />
+                      </td>
+                    </tr>
+                  </template>
+                </table>
+              </div>
+            </div>
+            <!-- End for second column data -->
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
