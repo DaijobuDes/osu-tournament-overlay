@@ -152,6 +152,11 @@ Alpine.data("overlay", () => ({
     }
 
     length = Math.abs(length);
+
+    if (length >= string.length) {
+      return string;
+    }
+
     return string.substring(0, length) + "...";
   },
 
