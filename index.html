@@ -1,113 +1,231 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <script type="module" src="/main.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vite App</title>
-</head>
+  <body x-data="overlay" style="background-color: #1a5f1a">
+    <!--#00FF00 - default -->
 
-<body style="background-color: #00FF00;"> <!--#00FF00 - default -->
-  <script type="module" src="/main.js"></script>
-
-  <!-- frame: Overlay -->
-  <div x-data="overlay" class="overlay">
-
-    <div class="box-1" :style="`background-image: url('${imageUrl}')`">
-      <div class="inner-box">
-        <div class="row-1">
-          <div class="title" x-text="title">Frums - Credits</div>
+    <!-- frame: Overlay -->
+    <div class="overlay">
+      <div class="box-1" :style="`background-image: url('${imageUrl}')`">
+        <div class="inner-box">
+          <div class="row-1">
+            <div class="title" x-text="title"></div>
+          </div>
+          <div class="row-2">
+            <div class="mapper">mapper</div>
+            <div class="mapper-name" x-text="mapperName"></div>
+            <div class="difficulty">difficulty</div>
+            <div class="difficulty-name" x-text="difficultyName"></div>
+          </div>
         </div>
-        <div class="row-2">
-          <div class="mapper">mapper</div>
-          <div class="mapper-name" x-text="mapperName">Sillyp</div>
-          <div class="difficulty">difficulty</div>
-          <div class="difficulty-name" x-text="difficultyName">[4K] F u n d i n g</div>
+      </div>
+
+      <div class="box-2">
+        <div class="inner-box">
+          <div class="row-1">
+            <div class="text">OD</div>
+            <div class="value" x-text="odValue">NaN</div>
+            <div class="text">&nbsp;/&nbsp;</div>
+            <div class="text">HP</div>
+            <div class="value" x-text="hpValue">NaN</div>
+          </div>
+          <div class="row-2">
+            <div class="text">Star Rating</div>
+            <div class="value" x-text="stars">NaN</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box-6">
+        <!-- Current implementation for mania 4k/7k -->
+        <!-- TODO: Add standard/taiko/catch here -->
+        <div class="inner-box">
+          <div class="row-1">
+            <div class="text">Rice Count</div>
+            <div class="value" x-text="circlesValue">NaN</div>
+          </div>
+          <div class="row-2">
+            <div class="text">Long Notes Count</div>
+            <div class="value" x-text="holdsValue">NaN</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box-3">
+        <div class="inner-box">
+          <div class="row-1">
+            <div class="text">Length</div>
+            <div class="value" x-text="beatmapLength">0:00</div>
+          </div>
+          <div class="row-2">
+            <div class="text">BPM</div>
+            <div class="value" x-text="bpm">NaN</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box-4">
+        <div class="inner-box">
+          <div class="row-1">
+            <template x-for="item in items.row1">
+              <div class="value" x-text="item.col" :class="{'active': currentBeatmapChecksum == item.hash.trim() }"></div>
+            </template>
+          </div>
+          <div class="row-2">
+            <template x-for="item in items.row2">
+              <div class="value" x-text="item.col" :class="{'active': currentBeatmapChecksum == item.hash.trim() }"></div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <div class="box-5">
+        <div class="inner-box">
+          <div class="logo">
+            <img src="Logo_White.png" width="60" height="60" />
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="box-2">
-      <div class="inner-box">
-        <div class="row-1">
-          <div class="text">OD</div>
-          <div class="value" x-text="odValue">7.5</div>
-          <div class="text">&nbsp;/&nbsp;</div>
-          <div class="text">HP</div>
-          <div class="value" x-text="hpValue">8</div>
+    <div class="settings">
+      <div class="header">
+        <h1>Settings</h1>
+      </div>
+      <div class="modes">
+        <div>
+          <h3>Modes: (wip)</h3>
         </div>
-        <div class="row-2">
-          <div class="text">Star Rating</div>
-          <div class="value" x-text="stars">3.35</div>
+        <label>
+          <input type="radio" x-model="currentGamemode" :value="0" x-effect="setGamemode(currentGamemode)" />
+          Standard
+        </label>
+        <label>
+          <input type="radio" x-model="currentGamemode" :value="1" x-effect="setGamemode(currentGamemode)" />
+          Taiko
+        </label>
+        <label>
+          <input type="radio" x-model="currentGamemode" :value="2" x-effect="setGamemode(currentGamemode)" />
+          Catch
+        </label>
+        <label>
+          <input type="radio" x-model="currentGamemode" :value="3" x-effect="setGamemode(currentGamemode)" />
+          Mania 4K
+        </label>
+        <label>
+          <input type="radio" x-model="currentGamemode" :value="4" x-effect="setGamemode(currentGamemode)" />
+          Mania 7K
+        </label>
+      </div>
+      <div class="text-setting">
+        <div class="header">
+          <h3>Artist and song title</h3>
+        </div>
+        <div class="truncate-title">
+          <label for="">Truncate title for up to: </label>
+          <input type="number" x-model="titleTruncateLength" />
+          characters
+        </div>
+        <div class="truncate-diff">
+          <label for="">Truncate difficulty for up to: </label>
+          <input type="number" x-model="diffTruncateLength" />
+          characters
+        </div>
+      </div>
+      <!-- <div class="bgcolor">
+        <div>
+          <h3>Background Color:</h3>
+        </div>
+      </div> -->
+      <div class="header">
+        <div>
+          <h2>Hash Settings</h2>
+          <div class="file-buttons">
+            <div class="save">
+              <button @click="saveToJsonFile()">Save as JSON</button>
+            </div>
+            <div class="load">
+              <label for="">Load JSON file: </label>
+              <input type="file" @change="loadJsonFile($event)" accept="json" />
+            </div>
+          </div>
+          <div class="hash-options">
+            <!-- For first column data -->
+            <div class="first-column">
+              <div class="header">
+                <h3>Row 1</h3>
+              </div>
+              <div class="buttons">
+                <button @click="addMapAndHash(0)">Add column</button>
+                <button @click="removeMapAndHash(0)">Remove column</button>
+              </div>
+
+              <div class="entries">
+                <table>
+                  <tr>
+                    <td>Map Type</td>
+                    <td>Hash</td>
+                    <td>
+                      <button @click="showMapAndHash(0)">Show entries to console</button>
+                    </td>
+                  </tr>
+                  <template x-for="entry in items.row1">
+                    <tr>
+                      <td>
+                        <input type="text" style="width: 100px" x-model="entry.col" />
+                      </td>
+                      <td>
+                        <input type="text" style="width: 300px" x-model="entry.hash" />
+                      </td>
+                    </tr>
+                  </template>
+                </table>
+              </div>
+            </div>
+            <!-- End for first column data -->
+            <!-- For second column data -->
+            <div class="second-column">
+              <div class="header">
+                <h3>Row 2</h3>
+              </div>
+              <div class="buttons">
+                <button @click="addMapAndHash(1)">Add column</button>
+                <button @click="removeMapAndHash(1)">Remove column</button>
+              </div>
+
+              <div class="entries">
+                <table>
+                  <tr>
+                    <td>Map Type</td>
+                    <td>Hash</td>
+                    <td>
+                      <button @click="showMapAndHash(1)">Show entries to console</button>
+                    </td>
+                  </tr>
+                  <template x-for="entry in items.row2">
+                    <tr>
+                      <td>
+                        <input type="text" style="width: 100px" x-model="entry.col" />
+                      </td>
+                      <td>
+                        <input type="text" style="width: 300px" x-model="entry.hash" />
+                      </td>
+                    </tr>
+                  </template>
+                </table>
+              </div>
+            </div>
+            <!-- End for second column data -->
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="box-6">
-      <div class="inner-box">
-        <div class="row-1">
-          <div class="text">Rice Count</div>
-          <div class="value" x-text="circlesValue">1234</div>
-        </div>
-        <div class="row-2">
-          <div class="text">Long Notes Count</div>
-          <div class="value" x-text="holdsValue">123</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="box-3">
-      <div class="inner-box">
-        <div class="row-1">
-          <div class="text">Length</div>
-          <div class="value" x-text="beatmapLength">1:36</div>
-        </div>
-        <div class="row-2">
-          <div class="text">BPM</div>
-          <div class="value" x-text="bpm">179</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="box-4">
-      <div class="inner-box">
-        <div class="row-1">
-          <div class="value" :class="{'active': isActive0}">RC1</div>
-          <div class="value" :class="{'active': isActive1}">RC2</div>
-          <div class="value" :class="{'active': isActive2}">RC3</div>
-          <div class="value" :class="{'active': isActive3}">RC4</div>
-          <div class="value" :class="{'active': isActive4}">RC5</div>
-          <div class="value" :class="{'active': isActive5}">RC6</div>
-          <div class="value" :class="{'active': isActive6}">RC7</div>
-          <div class="value" :class="{'active': isActive7}">LN1</div>
-          <div class="value" :class="{'active': isActive8}">LN2</div>
-        </div>
-        <div class="row-2">
-          <div class="value" :class="{'active': isActive9}">LN3</div>
-          <div class="value" :class="{'active': isActive10}">LN4</div>
-          <div class="value" :class="{'active': isActive11}">LN5</div>
-          <div class="value" :class="{'active': isActive12}">HB1</div>
-          <div class="value" :class="{'active': isActive13}">HB2</div>
-          <div class="value" :class="{'active': isActive14}">HB3</div>
-          <div class="value" :class="{'active': isActive15}">EX1</div>
-          <div class="value" :class="{'active': isActive16}">EX2</div>
-          <div class="value" :class="{'active': isActive17}">EX3</div>
-          <div class="value" :class="{'active': isActive18}">TB</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="box-5">
-      <div class="inner-box">
-        <div class="logo">
-          <img src="Logo_White.png" width="60" height="60" />
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-</body>
-
+  </body>
 </html>
