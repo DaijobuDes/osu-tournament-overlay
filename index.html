@@ -147,6 +147,11 @@
       <div class="header">
         <div>
           <h2>Hash Settings</h2>
+          <div>
+            <p style="display: inline">Current beatmap hash:</p>
+            <p style="display: inline" x-text="currentBeatmapChecksum">None</p>
+          </div>
+          <br />
           <div class="file-buttons">
             <div class="save">
               <button @click="saveToJsonFile()">Save as JSON</button>
