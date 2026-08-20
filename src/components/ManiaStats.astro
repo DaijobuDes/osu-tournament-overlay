@@ -1,0 +1,45 @@
+---
+let rc = 0;
+let ln = 0;
+---
+
+<div class="box-6">
+  <div class="inner-box">
+    <div class="row-1">
+      <div class="text">Rice Count</div>
+      <div class="value" id="rcValue">{rc}</div>
+    </div>
+    <div class="row-2">
+      <div class="text">Long Notes Count</div>
+      <div class="value" id="lnValue">{ln}</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const rcEl = document.getElementById("rcValue");
+  const lnEl = document.getElementById("lnValue");
+
+  window.addEventListener("tosu:update", ((e: CustomEvent) => {
+    const { beatmap } = e.detail;
+
+    if (!beatmap) return;
+
+    // RC
+    if (rcEl && rcEl.textContent !== beatmap.stats.objects.circles) {
+      rcEl.textContent = beatmap.stats.objects.circles || 0.00;
+    }
+
+    // LN
+    if (lnEl && lnEl.textContent !== beatmap.stats.objects.holds) {
+      lnEl.textContent = beatmap.stats.objects.holds || 0.00;
+    }
+
+  }) as EventListener);
+</script>
+
+<style>
+.box-6 {
+  width: 350px;
+}
+</style>

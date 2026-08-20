@@ -1,11 +1,16 @@
 ---
 import MapInfomation from "../components/MapInfomation.astro";
 import DifficultyStats from "../components/DifficultyStats.astro";
+import ManiaStats from "../components/ManiaStats.astro";
+
+import { isMania } from "../utils/helper";
+
 ---
 
 <div class="overlay">
   <MapInfomation />
   <DifficultyStats />
+  {isMania() && <ManiaStats />}
 </div>
 
 <style>

@@ -1,4 +1,6 @@
 ---
+import { isCSHidden } from "../utils/helper";
+
 let cs = 0.00;
 let od = 0.00;
 let hp = 0.00;
@@ -8,9 +10,11 @@ let stars = 0.00;
 <div class="box-2">
   <div class="inner-box">
     <div class="row-1">
-      <div class="text">CS</div>
-      <div class="value" id="csValue">{cs}</div>
-      <div class="text">&nbsp;/&nbsp;</div>
+      {isCSHidden() && (
+        <div class="text">CS</div>
+        <div class="value" id="csValue">{cs}</div>
+        <div class="text">&nbsp;/&nbsp;</div>
+      )}
       <div class="text">OD</div>
       <div class="value" id="odValue">{od}</div>
       <div class="text">&nbsp;/&nbsp;</div>
