@@ -1,0 +1,59 @@
+---
+let cs = 0.00;
+let od = 0.00;
+let hp = 0.00;
+let stars = 0.00;
+---
+
+<div class="box-2">
+  <div class="inner-box">
+    <div class="row-1">
+      <div class="text">CS</div>
+      <div class="value" id="csValue">{cs}</div>
+      <div class="text">&nbsp;/&nbsp;</div>
+      <div class="text">OD</div>
+      <div class="value" id="odValue">{od}</div>
+      <div class="text">&nbsp;/&nbsp;</div>
+      <div class="text">HP</div>
+      <div class="value" id="hpValue">{hp}</div>
+    </div>
+    <div class="row-2">
+      <div class="text">Star Rating</div>
+      <div class="value" id="stars">{stars}</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const csEl = document.getElementById("csValue");
+  const odEl = document.getElementById("odValue");
+  const hpEl = document.getElementById("hpValue");
+  const starsEl = document.getElementById("stars");
+
+  window.addEventListener("tosu:update", ((e: CustomEvent) => {
+    const { beatmap } = e.detail;
+
+    if (!beatmap) return;
+
+    // CS
+    if (csEl && csEl.textContent !== beatmap.stats.cs.converted) {
+      csEl.textContent = beatmap.stats.cs.converted || 0.00;
+    }
+
+    // OD
+    if (odEl && odEl.textContent !== beatmap.stats.od.converted) {
+      odEl.textContent = beatmap.stats.od.converted || 0.00;
+    }
+
+    // HP
+    if (hpEl && hpEl.textContent !== beatmap.stats.hp.converted) {
+      hpEl.textContent = beatmap.stats.hp.converted || 0.00;
+    }
+
+    // Stars
+    if (starsEl && starsEl.textContent !== beatmap.stats.stars.total) {
+      starsEl.textContent = beatmap.stats.stars.total || 0.00;
+    }
+
+  }) as EventListener);
+</script>
