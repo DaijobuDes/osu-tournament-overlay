@@ -5,6 +5,7 @@ import ManiaStats from "../components/ManiaStats.astro";
 
 import { isMania } from "../utils/helper";
 import BeatmapStats from "../components/BeatmapStats.astro";
+import OverlayLogo from "../components/OverlayLogo.astro";
 
 ---
 
@@ -13,6 +14,8 @@ import BeatmapStats from "../components/BeatmapStats.astro";
   <DifficultyStats />
   {isMania() && <ManiaStats />}
   <BeatmapStats />
+  <!-- Multiple maps here -->
+  <OverlayLogo />
 </div>
 
 <style>
