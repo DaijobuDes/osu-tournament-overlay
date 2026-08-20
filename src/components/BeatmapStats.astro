@@ -1,0 +1,57 @@
+---
+let beatmapLength = "0:00";
+let bpm = 0.00
+---
+
+<div class="box-3">
+  <div class="inner-box">
+    <div class="row-1">
+      <div class="text">Length</div>
+      <div class="value" id="beatmapLength">{beatmapLength}</div>
+    </div>
+    <div class="row-2">
+      <div class="text">BPM</div>
+      <div class="value" id="bpm">{bpm}</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { secondsToHumanReadable } from "../utils/helper";
+
+  const beatmapLengthEl = document.getElementById("beatmapLength");
+  const bpmEl = document.getElementById("bpm");
+
+  window.addEventListener("tosu:update", ((e: CustomEvent) => {
+    const { beatmap } = e.detail;
+
+    if (!beatmap) return;
+
+    const drainTime = beatmap.time.lastObject - beatmap.time.firstObject;
+    const beatmapLength = secondsToHumanReadable(drainTime);
+    const bpmCommon: number = Math.round(beatmap.stats.bpm.common);
+    const bpmMin = beatmap.stats.bpm.min;
+    const bpmMax = beatmap.stats.bpm.max;
+    let bpmFormatted = bpmCommon.toString();
+    if (bpmMin != bpmMax) {
+      bpmFormatted = `${bpmMin}-${bpmMax} (${bpmCommon})`;
+    }
+
+    // Beatmap length
+    if (beatmapLengthEl && beatmapLengthEl.textContent !== beatmapLength) {
+      beatmapLengthEl.textContent = beatmapLength || "NaN";
+    }
+
+    // BPM
+    if (bpmEl && bpmEl.textContent !== bpmFormatted) {
+      bpmEl.textContent = bpmFormatted || "NaN";
+    }
+
+  }) as EventListener);
+</script>
+
+<style>
+.box-3 {
+  width: 250px;
+}
+</style>

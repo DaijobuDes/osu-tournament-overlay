@@ -4,6 +4,7 @@ import DifficultyStats from "../components/DifficultyStats.astro";
 import ManiaStats from "../components/ManiaStats.astro";
 
 import { isMania } from "../utils/helper";
+import BeatmapStats from "../components/BeatmapStats.astro";
 
 ---
 
@@ -11,6 +12,7 @@ import { isMania } from "../utils/helper";
   <MapInfomation />
   <DifficultyStats />
   {isMania() && <ManiaStats />}
+  <BeatmapStats />
 </div>
 
 <style>
