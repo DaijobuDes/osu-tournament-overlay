@@ -1,0 +1,120 @@
+---
+let imageUrl = "/card@2x.jpg";
+let title = "Unknown artist";
+let mapper = "No mapper";
+let difficulty = "No difficulty selected";
+---
+
+<div class="box-1" id="map-box" style={imageUrl ? `background-image: url('${imageUrl}')` : undefined}>
+  <div class="inner-box">
+    <div class="row-1">
+      <div class="title" id="map-title">{title}</div>
+    </div>
+    <div class="row-2">
+      <div class="mapper">mapper</div>
+      <div class="mapper-name" id="map-mapper">{mapper}</div>
+      <div class="difficulty">difficulty</div>
+      <div class="difficulty-name" id="map-difficulty">{difficulty}</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { truncate } from "../utils/helper";
+
+  // DOM element references
+  const boxEl = document.getElementById("map-box");
+  const titleEl = document.getElementById("map-title");
+  const mapperEl = document.getElementById("map-mapper");
+  const diffEl = document.getElementById("map-difficulty");
+
+  window.addEventListener("tosu:update", ((e: CustomEvent) => {
+    const { beatmap, directPath } = e.detail;
+    if (!beatmap) return;
+
+    // Title
+    if (titleEl && titleEl.textContent !== beatmap.title) {
+      titleEl.textContent = beatmap.title || "Unknown artist";
+    }
+
+    // Mapper
+    if (mapperEl && mapperEl.textContent !== beatmap.mapper) {
+      mapperEl.textContent = beatmap.mapper || "No mapper";
+    }
+
+    // Difficulty name
+    const difficultyName = truncate(beatmap.version);
+
+    if (diffEl && diffEl.textContent !== difficultyName) {
+      diffEl.textContent = difficultyName;
+    }
+
+    // Background image (checking directPath/beatmap cover)
+    // TODO: Make 127.0.0.1 to be editable before compile via .env
+    const bgUrl = directPath?.beatmapBackground
+      ? `http://127.0.0.1:24050/files/beatmap/${encodeURIComponent(directPath.beatmapBackground)}`
+      : "";
+
+    if (boxEl && bgUrl) {
+      const currentBg = boxEl.style.backgroundImage;
+      const newBg = `url("${bgUrl}")`;
+
+      if (currentBg !== newBg) {
+        boxEl.style.backgroundImage = newBg;
+      }
+    }
+  }) as EventListener);
+</script>
+
+<style>
+.box-1 {
+  /* border: 1pt solid rgb(0, 248, 54); */
+  display: flex;
+  width: 956px;
+  height: 102px;
+  /* background-image: url("card@2x.jpg"); */
+  background-size: cover;
+  background-position: center;
+  /* background-position: 75%; */
+  box-shadow: inset 0 0 0 944px rgba(0, 0, 0, 0.7);
+
+  .inner-box {
+    /* border: 1pt solid rgb(255, 166, 0); */
+    width: 100%;
+    margin-top: 23px;
+    margin-bottom: 23px;
+    margin-left: 22px;
+    margin-right: 22px;
+
+    .row-1 {
+      /* border: 1pt solid rgb(255, 0, 0); */
+      height: 24px;
+
+      .title {
+        font-size: 22px;
+        font-weight: 700;
+      }
+    }
+
+    .row-2 {
+      margin-top: 13px;
+      display: flex;
+      font-size: 12pt;
+
+      div {
+        margin-right: 10px;
+      }
+
+      .mapper-name {
+        /* Change this until visually okay */
+        width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+    }
+  }
+
+}
+</style>
