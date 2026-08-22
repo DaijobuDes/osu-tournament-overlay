@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { supportedCS } from '../utils/helpers';
+	import { supportedAR, supportedCS } from '../utils/helpers';
 	import { tosuState } from '../utils/socket.svelte';
 
 	interface Props {
@@ -19,6 +19,8 @@
 			<div class="text">CS</div>
 			<div class="value">{cs}</div>
 			<div class="text">&nbsp;/&nbsp;</div>
+		{/if}
+		{#if supportedAR(beatmapGamemode)}
 			<div class="text">AR</div>
 			<div class="value">{ar}</div>
 			<div class="text">&nbsp;/&nbsp;</div>

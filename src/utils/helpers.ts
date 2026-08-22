@@ -18,6 +18,15 @@ export function supportedCS(mode: number): boolean {
 
 /**
  *
+ * @param mode can be 0-4, where 0 is standard, 1 is taiko, 2 is catch, 3 and 4 is mania
+ * @returns true if mode is 0 or 1 or 2
+ */
+export function supportedAR(mode: number): boolean {
+	return [0, 1, 2].includes(mode);
+}
+
+/**
+ *
  * @param length truncate up to n length
  * @param text text to truncate
  * @returns string
