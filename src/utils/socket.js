@@ -1,145 +1,135 @@
 class WebSocketManager {
-  constructor(host) {
-    if (host) {
-      this.host = host;
-    }
+	constructor(host) {
+		if (host) {
+			this.host = host;
+		}
 
-    this.createConnection = this.createConnection.bind(this);
-  }
+		this.createConnection = this.createConnection.bind(this);
+	}
 
-  createConnection(url, callback) {
-    if (callback == null) {
-      console.error(`[ISSUE] ${url}: no callback`);
-      return;
-    };
+	createConnection(url, callback) {
+		if (callback == null) {
+			console.error(`[ISSUE] ${url}: no callback`);
+			return;
+		}
 
-    let INTERVAL = '';
+		let INTERVAL = '';
 
-    const that = this;
-    const socket = new WebSocket(`ws://${url}`);
+		const that = this;
+		const socket = new WebSocket(`ws://${url}`);
 
-    socket.onopen = () => {
-      console.log(`[OPEN] ${url}: Connected`);
+		socket.onopen = () => {
+			console.log(`[OPEN] ${url}: Connected`);
 
-      if (INTERVAL) clearInterval(INTERVAL);
-    };
+			if (INTERVAL) clearInterval(INTERVAL);
+		};
 
-    socket.onclose = (event) => {
-      console.log(`[CLOSED] ${url}: ${event.reason}`);
+		socket.onclose = (event) => {
+			console.log(`[CLOSED] ${url}: ${event.reason}`);
 
-      INTERVAL = setTimeout(() => {
-        that.createConnection(url, callback);
-      }, 1000);
-    };
+			INTERVAL = setTimeout(() => {
+				that.createConnection(url, callback);
+			}, 1000);
+		};
 
-    socket.onerror = (event) => {
-      console.log(`[ERROR] ${url}: ${event.reason}`);
-    };
+		socket.onerror = (event) => {
+			console.log(`[ERROR] ${url}: ${event.reason}`);
+		};
 
-    socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
+		socket.onmessage = (event) => {
+			try {
+				const data = JSON.parse(event.data);
 
-        callback(data);
-      } catch (error) {
-        console.log(`[MESSAGE_ERROR] ${url}: Couldn't parse incomming message`);
-      };
-    };
-  };
+				callback(data);
+			} catch (error) {
+				console.log(`[MESSAGE_ERROR] ${url}: Couldn't parse incomming message`);
+			}
+		};
+	}
 
+	/**
+	 * Connects to gosu compatible socket api.
+	 * @param {(data: WEBSOCKET_V1) => void} callback - The function to handle received messages.
+	 */
+	api_v1(callback) {
+		this.createConnection(`${this.host}/ws`, callback);
+	}
 
-  /**
-   * Connects to gosu compatible socket api.
-   * @param {(data: WEBSOCKET_V1) => void} callback - The function to handle received messages.
-   */
-  api_v1(callback) {
-    this.createConnection(`${this.host}/ws`, callback);
-  };
+	/**
+	 * Connects to tosu advanced socket api.
+	 * @param {(data: WEBSOCKET_V2) => void} callback - The function to handle received messages.
+	 */
+	api_v2(callback) {
+		this.createConnection(`${this.host}/websocket/v2`, callback);
+	}
 
+	/**
+	 * Connects to keyOverlay socket api.
+	 * @param {(data: WEBSOCKET_V2_KEYS) => void} callback - The function to handle received messages.
+	 */
+	api_v2_precise(callback) {
+		this.createConnection(`${this.host}/websocket/v2/precise`, callback);
+	}
 
-  /**
-   * Connects to tosu advanced socket api.
-   * @param {(data: WEBSOCKET_V2) => void} callback - The function to handle received messages.
-   */
-  api_v2(callback) {
-    this.createConnection(`${this.host}/websocket/v2`, callback);
-  };
+	/**
+	 * Calculate custom pp for a current, or specified map
+	 * @param {CALCULATE_PP} params
+	 * @returns {Promise<CALCULATE_PP_RESPONSE | { error: string }>}
+	 */
+	async calculate_pp(params) {
+		try {
+			if (typeof params != 'object') {
+				return {
+					error: 'Wrong argument type, should be object with params'
+				};
+			}
 
+			const request = await fetch(`${this.host}/api/calculate/pp`, {
+				method: 'GET',
+				body: JSON.stringify(params)
+			});
 
-  /**
-   * Connects to keyOverlay socket api.
-   * @param {(data: WEBSOCKET_V2_KEYS) => void} callback - The function to handle received messages.
-   */
-  api_v2_precise(callback) {
-    this.createConnection(`${this.host}/websocket/v2/precise`, callback);
-  };
+			const json = await request.json();
+			return json;
+		} catch (error) {
+			console.error(error);
 
-  /**
-   * Calculate custom pp for a current, or specified map
-   * @param {CALCULATE_PP} params
-   * @returns {Promise<CALCULATE_PP_RESPONSE | { error: string }>}
-   */
-  async calculate_pp(params) {
-    try {
-      if (typeof params != 'object') {
-        return {
-          error: 'Wrong argument type, should be object with params'
-        };
-      };
+			return {
+				error: error.message
+			};
+		}
+	}
 
+	/**
+	 * Get beatmap **.osu** file (local)
+	 * @param {string} file_path - Path to a file **beatmap_folder_name/osu_file_name.osu**
+	 * @returns {string | { error: string }}
+	 */
+	async getBeatmapOsuFile(file_path) {
+		try {
+			if (typeof file_path != 'object') {
+				return {
+					error: 'Wrong argument type, should be object with params'
+				};
+			}
 
-      const request = await fetch(`${this.host}/api/calculate/pp`, {
-        method: "GET",
-        body: JSON.stringify(params)
-      });
+			const request = await fetch(`${this.host}/files/beatmap/${file_path}`, {
+				method: 'GET'
+			});
 
+			const text = await request.text();
+			return text;
+		} catch (error) {
+			console.error(error);
 
-      const json = await request.json();
-      return json;
-    } catch (error) {
-      console.error(error);
-
-      return {
-        error: error.message,
-      };
-    };
-  };
-
-  /**
-   * Get beatmap **.osu** file (local)
-   * @param {string} file_path - Path to a file **beatmap_folder_name/osu_file_name.osu**
-   * @returns {string | { error: string }}
-   */
-  async getBeatmapOsuFile(file_path) {
-    try {
-      if (typeof file_path != 'object') {
-        return {
-          error: 'Wrong argument type, should be object with params'
-        };
-      };
-
-
-      const request = await fetch(`${this.host}/files/beatmap/${file_path}`, {
-        method: "GET",
-      });
-
-
-      const text = await request.text();
-      return text;
-    } catch (error) {
-      console.error(error);
-
-      return {
-        error: error.message,
-      };
-    };
-  };
-};
-
+			return {
+				error: error.message
+			};
+		}
+	}
+}
 
 export default WebSocketManager;
-
-
 
 /** @typedef {object} CALCULATE_PP
  * @property {string} path - Path to .osu file. Example: C:/osu/Songs/beatmap/file.osu
@@ -156,8 +146,6 @@ export default WebSocketManager;
  * @property {number} passedObjects - Sum of nGeki, nKatu, n300, n100, n50, nMisses
  * @property {number} clockRate - Map rate number. Example: 1.5 = DT
  */
-
-
 
 /** @typedef {object} CALCULATE_PP_RESPONSE
  * @property {object} attributes
@@ -197,8 +185,6 @@ export default WebSocketManager;
  * @property {number} performance.difficulty.stars
  * @property {number} performance.difficulty.maxCombo
  */
-
-
 
 /** @typedef {object} WEBSOCKET_V1
  * @property {object} settings
@@ -414,8 +400,6 @@ export default WebSocketManager;
  * @property {number} tourney.ipcClients.gameplay.mods.num
  * @property {string} tourney.ipcClients.gameplay.mods.str
  */
-
-
 
 /** @typedef {object} WEBSOCKET_V2
  * @property {object} state
@@ -722,8 +706,6 @@ export default WebSocketManager;
  * @property {number} tourney.clients.play.pp.maxAchievedThisPlay
  * @property {number} tourney.clients.play.unstableRate
  */
-
-
 
 /** @typedef {object} WEBSOCKET_V2_KEYS
  * @property {object} keys
